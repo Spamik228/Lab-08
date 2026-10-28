@@ -1,14 +1,20 @@
+**Top 3 Hotspots**
+
 | Hotspot / Функція                      | Час (% / ms) | Тип часу (Python / Native) | Гіпотеза (Чому це повільно та як оптимізувати)                                         |
 |:---------------------------------------| :---|:---------------------------|:---------------------------------------------------------------------------------------|
 | **1. Tokenizer / AST / text cleaning** | ~X% | Python-time                | Використання чистого Python / регулярних виразів при обробці великих масивів тексту.   |
 | **2. BM25 calculation / scoring loop** | ~Y% | Python-time                | Ітерація по словниках / списку документів у Python-циклах замість векторних обчислень. |
 | **3. Inverted Index Lookup / Sorting** | ~Z% | Python / Native            | Часте перетворення структур даних або ручне сортування топ-K результатів.              |
 
+**Markdown-bench**
+
 | Тип запиту                                       | Lab 3 scorer (ms) | NumPy scorer (ms) | Speedup   |
 |:-------------------------------------------------|:------------------|:------------------|:----------|
 | **Common term** (популярне слово)                | 1.82 ms           | 0.95 ms           | **1.91x** |
 | **Rare term** (рідкісне слово)                   | 0.45 ms           | 0.42 ms           | **1.07x** |
 | **3-term query** (складний багатотермовий запит) | 3.40 ms           | 1.15 ms           | **2.95x** |
+
+**Precision@5**
 
 | Режим пошуку              | Precision@5 (Оригінальні запити) | Precision@5 (Парафраз-запити) | Інтерпретація результатів                                                                                                                     |
 |:--------------------------|:---------------------------------|:------------------------------|:----------------------------------------------------------------------------------------------------------------------------------------------|
@@ -47,15 +53,15 @@
 ---
 
 
-1. Live Demo (1.5 min)
+1. Live Demo 
 Run a live search in the terminal or via the web interface:findex search --mode hybrid "fast asynchronous profiling in python"
 
 Show the instantaneous retrieval of hybrid results (RRF) and switch to the FastAPI/UI target, demonstrating the mode toggle (Keyword vs. Semantic vs. Hybrid).
 
-2. One Measurement You're Proud Of (1.5 min)
+2. One Measurement You're Proud Of 
 What we are proud of: The transition to np.memmap combined with NumPy vectorization reduced cold index loading time from 45 ms to 2 ms (a 22.5x speedup), cut search query latency down to 1.15 ms, and achieved a stable Precision@5 of 0.94 thanks to hybrid score fusion.
 
-3. One Bug That Taught You Something (2 min)
+3. One Bug That Taught You Something 
 The bug story: During Milestone 2, we encountered an unexpected memory leak (MemoryError / segmentation fault) when processing large postings lists due to improper buffer allocation and a lack of memory alignment during np.frombuffer calls.
 
 What it taught us: This incident clearly highlighted the difference between Python objects and micro-copying inside loops. Key takeaway: always verify the read-only status for memmap arrays and ensure data types (int32) match at the byte level without implicit conversions.
